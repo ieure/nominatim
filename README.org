@@ -1,0 +1,99 @@
+#+OPTIONS: toc:nil ^:nil author:nil email:nil num:nil
+
+* Nominatim
+  :PROPERTIES:
+  :ID:       55791a9d-d0dc-4788-b12b-effe11e14e9c
+  :END:
+
+  This is an Emacs library which lets you forward and reverse geocode
+  using [[https://nominatim.openstreetmap.org/][Nominatim]], a component of [[https://www.openstreetmap.org/][OpenStreetMap]].
+
+** Requirements
+   :PROPERTIES:
+   :ID:       cd90d3ce-7ceb-4987-a01c-84cd1d6b850f
+   :END:
+
+   - Emacs 25.x or greater.
+   - [[https://melpa.org/#/s][s]]
+
+** Usage
+   :PROPERTIES:
+   :ID:       4f8871c9-82fc-4fc7-8c16-050d336bb177
+   :END:
+
+*** Geocode
+    :PROPERTIES:
+    :ID:       82b1c509-56cf-4cb4-86e4-e06ecb42d029
+    :END:
+
+    Geocoding is the process of turning freeform text into geospatial
+    data.
+
+    #+BEGIN_SRC emacs-lisp :exports both :cache yes
+      (pp (nominatim-geocode "creepy's portland or"))
+    #+END_SRC
+
+    #+RESULTS[626d1bcd18840d1a5504c887f46b2008b98c8e95]:
+    #+begin_example
+    [((place_id . 247862422)
+      (licence . "Data Â© OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright")
+      (osm_type . "way")
+      (osm_id . 519770048)
+      (boundingbox .
+                   ["45.5173392" "45.5174831" "-122.6591702" "-122.6589738"])
+      (lat . "45.51741115")
+      (lon . "-122.659071975122")
+      (display_name . "Creepy's, 627, Southeast Morrison Street, Central East Side, Buckman, Portland, Multnomah County, Oregon, 97214, USA")
+      (class . "amenity")
+      (type . "bar")
+      (importance . 0.401)
+      (icon . "https://nominatim.openstreetmap.org/images/mapicons/food_bar.p.20.png")
+      (address
+       (bar . "Creepy's")
+       (house_number . "627")
+       (road . "Southeast Morrison Street")
+       (neighbourhood . "Central East Side")
+       (suburb . "Buckman")
+       (city . "Portland")
+       (county . "Multnomah County")
+       (state . "Oregon")
+       (postcode . "97214")
+       (country . "USA")
+       (country_code . "us")))]
+    #+end_example
+
+*** Reverse Geocode
+    :PROPERTIES:
+    :ID:       e7aeb0aa-f9ee-4766-a104-161cd7a91169
+    :END:
+
+    Reverse geocoding turns a lat/lon into a street address.
+
+    #+BEGIN_SRC emacs-lisp :exports both :cache yes
+      (pp (nominatim-reverse-geocode 45.52394445 -122.675869609626))
+    #+END_SRC
+
+    #+RESULTS[561238cadedd5eeae76eeb43943777d20590bc3d]:
+    #+begin_example
+    ((place_id . 123976214)
+     (licence . "Data Â© OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright")
+     (osm_type . "way")
+     (osm_id . 207186676)
+     (lat . "45.52394445")
+     (lon . "-122.675869609626")
+     (display_name . "Ground Kontrol Arcade, 511, Northwest Couch Street, Chinatown, Old Town, Portland, Multnomah County, Oregon, 97209, USA")
+     (address
+      (pub . "Ground Kontrol Arcade")
+      (house_number . "511")
+      (road . "Northwest Couch Street")
+      (neighbourhood . "Chinatown")
+      (suburb . "Old Town")
+      (city . "Portland")
+      (county . "Multnomah County")
+      (state . "Oregon")
+      (postcode . "97209")
+      (country . "USA")
+      (country_code . "us"))
+     (boundingbox .
+                  ["45.5238709" "45.524017" "-122.6759711" "-122.6757681"]))
+    #+end_example
