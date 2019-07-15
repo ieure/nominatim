@@ -35,30 +35,30 @@
 ;;
 ;; ,----
 ;; | [((place_id . 247862422)
-;;     |   (licence . "Data Â© OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright")
-;;     |   (osm_type . "way")
-;;     |   (osm_id . 519770048)
-;;     |   (boundingbox .
-;;                      |                ["45.5173392" "45.5174831" "-122.6591702" "-122.6589738"])
-;;     |   (lat . "45.51741115")
-;;     |   (lon . "-122.659071975122")
-;;     |   (display_name . "Creepy's, 627, Southeast Morrison Street, Central East Side, Buckman, Portland, Multnomah County, Oregon, 97214, USA")
-;;     |   (class . "amenity")
-;;     |   (type . "bar")
-;;     |   (importance . 0.401)
-;;     |   (icon . "https://nominatim.openstreetmap.org/images/mapicons/food_bar.p.20.png")
-;;     |   (address
-;;          |    (bar . "Creepy's")
-;;          |    (house_number . "627")
-;;          |    (road . "Southeast Morrison Street")
-;;          |    (neighbourhood . "Central East Side")
-;;          |    (suburb . "Buckman")
-;;          |    (city . "Portland")
-;;          |    (county . "Multnomah County")
-;;          |    (state . "Oregon")
-;;          |    (postcode . "97214")
-;;          |    (country . "USA")
-;;          |    (country_code . "us")))]
+;; |   (licence . "Data Â© OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright")
+;; |   (osm_type . "way")
+;; |   (osm_id . 519770048)
+;; |   (boundingbox .
+;;                  |                ["45.5173392" "45.5174831" "-122.6591702" "-122.6589738"])
+;; |   (lat . "45.51741115")
+;; |   (lon . "-122.659071975122")
+;; |   (display_name . "Creepy's, 627, Southeast Morrison Street, Central East Side, Buckman, Portland, Multnomah County, Oregon, 97214, USA")
+;; |   (class . "amenity")
+;; |   (type . "bar")
+;; |   (importance . 0.401)
+;; |   (icon . "https://nominatim.openstreetmap.org/images/mapicons/food_bar.p.20.png")
+;; |   (address
+;; |    (bar . "Creepy's")
+;; |    (house_number . "627")
+;; |    (road . "Southeast Morrison Street")
+;; |    (neighbourhood . "Central East Side")
+;; |    (suburb . "Buckman")
+;; |    (city . "Portland")
+;; |    (county . "Multnomah County")
+;; |    (state . "Oregon")
+;; |    (postcode . "97214")
+;; |    (country . "USA")
+;; |    (country_code . "us")))]
 ;; `----
 ;;
 ;;
