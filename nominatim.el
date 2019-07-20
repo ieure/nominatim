@@ -111,31 +111,83 @@
       (search-forward "\n\n")
       (json-read))))
 
-(defun nominatim--fields->str (entry fields)
-  "Return a printable version of fields FIELDS in ENTRY."
-  (let* ((type (assoc 'type entry))
-         (entry-type-key (intern (cdr type)))
-         (address (cons type
-                        (cdr (assoc 'address entry))))
-         (address (cons
-                   `(type-value . ,(cdr (assoc entry-type-key address)))
-                   address))
-         (commas '(type-value road city)))
-    (thread-last
-        (cl-loop for field in fields
-                 for raw-val = (cdr (assoc field address))
-                 for val = (if (and raw-val (not (string= raw-val ""))
-                                    (memq field commas))
-                               (concat raw-val ",")
-                             raw-val)
-                 when val collect val)
-      (s-join " "))))
+(defun nominatum--field (elements addr field &optional break)
+  "Push ADDR field FIELD onto ELEMENTS, followed by BREAK.
+   If FIELD isn't set, do nothing. and return NIL.
+   If FIELD's value was pushed, returns non-NIL."
+  (prog1 (if-let ((val (cdr (assoc field addr))))
+             (push val elements))
+    (when break
+      (push break elements))))
 
-(defun nominatim-entry->address (entry)
-  "Return a printable address for Nominatim result ENTRY."
-  (nominatim--fields->str
-   entry
-   '(type-value house_number road city state postcode country)))
+(defun nominatum--printable (loc)
+  "Return an abstract printable version of location LOC.
+   A human-readable string can be obtained by passing this to
+   `nominatum--printable->oneline' or
+   `nominatum--printable->nline'.
+
+   The abstract representation is a list of text items, with
+   :break (for a hard break, e.g. newline) and
+   :soft-break (e.g. comma) interspersed."
+  (let ((cc (thread-last (assoc 'address loc)
+              (cdr)
+              (assoc 'country_code)
+              (cdr))))
+    (cond ((string= cc "us") (nominatum--printable-us loc))
+          (t (error "Don't know how to handle `%s' addresses" cc)))))
+
+(defun nominatum--printable-us (loc)
+  "Return a human-readable version of nominatim US location LOC."
+  (let* ((elements)
+         (addr (cdr (assoc 'address loc)))
+         (ff (apply-partially 'nominatim-field elements addr))
+         (type-sym (intern (cdr (assoc 'type loc)))))
+
+    ;; Business name
+    (ff type-sym :break)
+
+    ;; House number
+    (ff 'house_number)
+
+    ;; Road
+    (ff 'road :break)
+
+    ;; FIXME suite, apartment, floor, etc
+
+    ;; If the city is set, use it; otherwise, the county.
+    (or (ff 'city :soft-break)
+        (ff 'county :soft-break))
+
+    ;; State
+    (ff 'state)
+
+    ;; Postcode
+    (ff 'postcode :break)
+
+    ;; Country
+    (ff 'country)
+
+    (reverse elements)))
+
+(defun nominatum--printable->oneline (printable-loc)
+  "Return a one-line human-readable version PRINTABLE-LOC."
+  (thread-first
+      (lambda (s elt)
+        ;; Replace all break types with commas
+        (cond ((keywordp elt) (concat s ","))
+              (t (concat s " " elt))))
+    (reduce printable-loc)))
+
+(defun nominatum--printable->nline (printable-loc)
+  "Return a multi-line human-readable version PRINTABLE-LOC."
+  (thread-first
+      (lambda (s elt)
+        ;; Soft breaks become commas; hard become newlines.
+        (cond ((eq :soft-break elt) (concat s ","))
+              ((eq :break elt) (concat s "\n"))
+              (t (concat s " " elt))))
+    (reduce printable-loc)))
+
 
 ;;;###autoload
 (defun nominatim-reverse-geocode (lat lon)
