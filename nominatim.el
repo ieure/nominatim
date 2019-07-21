@@ -97,6 +97,8 @@
 
 ;;; Code:
 
+(require 'ert)
+
 (defconst nominatim--base-url "https://nominatim.openstreetmap.org"
   "Base URL of Nominatim.")
 
@@ -111,14 +113,14 @@
       (search-forward "\n\n")
       (json-read))))
 
-(defun nominatum--field (elements addr field &optional break)
+(defmacro nominatum--field (elements addr field &optional break)
   "Push ADDR field FIELD onto ELEMENTS, followed by BREAK.
    If FIELD isn't set, do nothing. and return NIL.
    If FIELD's value was pushed, returns non-NIL."
-  (prog1 (if-let ((val (cdr (assoc field addr))))
-             (push val elements))
-    (when break
-      (push break elements))))
+  `(prog1 (if-let ((val (cdr (assoc ,field ,addr))))
+             (push val ,elements))
+    (when ,break
+      (push ,break ,elements))))
 
 (defun nominatum--printable (loc)
   "Return an abstract printable version of location LOC.
@@ -140,34 +142,32 @@
   "Return a human-readable version of nominatim US location LOC."
   (let* ((elements)
          (addr (cdr (assoc 'address loc)))
-         (ff (apply-partially 'nominatim-field elements addr))
          (type-sym (intern (cdr (assoc 'type loc)))))
+      ;; Business name
+      (nominatum--field elements addr type-sym :break)
 
-    ;; Business name
-    (ff type-sym :break)
+      ;; House number
+      (nominatum--field elements addr 'house_number)
 
-    ;; House number
-    (ff 'house_number)
+      ;; Road
+      (nominatum--field elements addr 'road :break)
 
-    ;; Road
-    (ff 'road :break)
+      ;; FIXME suite, apartment, floor, etc
 
-    ;; FIXME suite, apartment, floor, etc
+      ;; If the city is set, use it; otherwise, the county.
+      (or (nominatum--field elements addr 'city :soft-break)
+          (nominatum--field elements addr 'county :soft-break))
 
-    ;; If the city is set, use it; otherwise, the county.
-    (or (ff 'city :soft-break)
-        (ff 'county :soft-break))
+      ;; State
+      (nominatum--field elements addr 'state)
 
-    ;; State
-    (ff 'state)
+      ;; Postcode
+      (nominatum--field elements addr 'postcode :break)
 
-    ;; Postcode
-    (ff 'postcode :break)
+      ;; Country
+      (nominatum--field elements addr 'country)
 
-    ;; Country
-    (ff 'country)
-
-    (reverse elements)))
+      (seq-reverse elements)))
 
 (defun nominatum--printable->oneline (printable-loc)
   "Return a one-line human-readable version PRINTABLE-LOC."
@@ -202,6 +202,43 @@
    Returns an array of results."
   (nominatim--req "search" `((addressdetails 1)
                              (q ,text))))
+
+ ;;; Tests
+
+(defconst nominatim--xfinity-test-loc
+  '((place_id . 143200844)
+    (licence . "Data Â© OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright")
+    (osm_type . "way")
+    (osm_id . 293769676)
+    (boundingbox .
+                 ["45.5480021" "45.5481288" "-122.5905444" "-122.5900386"])
+    (lat . "45.54807395")
+    (lon . "-122.59029280645")
+    (display_name . "Xfinity, 7037, Northeast Sandy Boulevard, Roseway, Portland, Multnomah County, Oregon, 97213, USA")
+    (class . "shop")
+    (type . "electronics")
+    (importance . 0.201)
+    (address
+     (electronics . "Xfinity")
+     (house_number . "7037")
+     (road . "Northeast Sandy Boulevard")
+     (suburb . "Roseway")
+     (city . "Portland")
+     (county . "Multnomah County")
+     (state . "Oregon")
+     (postcode . "97213")
+     (country . "USA")
+     (country_code . "us"))))
+
+(ert-deftest nominatim-printable-test ()
+  (should (equal '("Xfinity" :break "7037" "Northeast Sandy Boulevard" :break
+                   "Portland" :soft-break "Oregon" "97213" :break "USA")
+                 (nominatum--printable nominatim--xfinity-test-loc )
+                 )))
+
+(ert-deftest nominatim-oneline-test ()
+  (should (string= "Xfinity, 7037 Northeast Sandy Boulevard, Portland, Oregon 97213, USA"
+                 (nominatum--printable->oneline (nominatum--printable nominatim--xfinity-test-loc)))))
 
 (provide 'nominatim)
 
