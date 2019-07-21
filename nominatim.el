@@ -201,6 +201,11 @@
   "Reverse geocode LAT,LON."
   (nominatim--req "reverse" `((lat ,lat) (lon ,lon))))
 
+(defun nominatim-reverse-geocode-geoclue (geoclue-location)
+  "Reverse geocode a Geoclue2 location."
+  (nominatim-reverse-geocode (cdr (assoc 'latitude  geoclue-location))
+                             (cdr (assoc 'longitude  geoclue-location))))
+
 ;;;###autoload
 (defun nominatim-geocode (text)
   "Geocode TEXT with Nominatim.
