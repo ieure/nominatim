@@ -104,11 +104,16 @@
 
 (defun nominatim--req (endpoint &optional query-args)
   "Make a request to Nominatim ENDPOINT with QUERY-ARGS."
-  (let ((url (concat nominatim--base-url "/" endpoint "?"
-                     (url-build-query-string (cons '("format" "json") query-args))))
-        (url-request-extra-headers ))
+  (let* ((url (concat nominatim--base-url "/" endpoint "?"
+                      (url-build-query-string (cons '("format" "json") query-args))))
+         (cached (url-is-cached url)))
+
     (with-current-buffer
-        (url-retrieve-synchronously url t)
+        (if cached
+            (url-fetch-from-cache url)
+          (url-retrieve-synchronously url t))
+      (unless cached
+        (url-store-in-cache))
       (goto-char (point-min))
       (search-forward "\n\n")
       (json-read))))
