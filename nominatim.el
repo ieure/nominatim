@@ -185,6 +185,8 @@
         ;; Soft breaks become commas; hard become newlines.
         (cond ((eq :soft-break elt) (concat s ","))
               ((eq :break elt) (concat s "\n"))
+              ;; If the last char was a newline, don't add whitespace.
+              ((string= "\n" (substring s (1- (length s)))) (concat s elt))
               (t (concat s " " elt))))
     (reduce printable-loc)))
 
@@ -233,12 +235,15 @@
 (ert-deftest nominatim-printable-test ()
   (should (equal '("Xfinity" :break "7037" "Northeast Sandy Boulevard" :break
                    "Portland" :soft-break "Oregon" "97213" :break "USA")
-                 (nominatum--printable nominatim--xfinity-test-loc )
-                 )))
+                 (nominatum--printable nominatim--xfinity-test-loc))))
 
 (ert-deftest nominatim-oneline-test ()
   (should (string= "Xfinity, 7037 Northeast Sandy Boulevard, Portland, Oregon 97213, USA"
-                 (nominatum--printable->oneline (nominatum--printable nominatim--xfinity-test-loc)))))
+                   (nominatum--printable->oneline (nominatum--printable nominatim--xfinity-test-loc)))))
+
+(ert-deftest nominatim-nline-test ()
+  (should (string= "Xfinity\n7037 Northeast Sandy Boulevard\nPortland, Oregon 97213\nUSA"
+                   (nominatum--printable->nline (nominatum--printable nominatim--xfinity-test-loc)))))
 
 (provide 'nominatim)
 
