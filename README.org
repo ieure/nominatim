@@ -14,7 +14,8 @@
    :END:
 
    - Emacs 25.x or greater.
-   - [[https://melpa.org/#/s][s]]
+   - Internet access.
+
 
 ** Usage
    :PROPERTIES:
@@ -62,6 +63,7 @@
        (country_code . "us")))]
     #+end_example
 
+
 *** Reverse Geocode
     :PROPERTIES:
     :ID:       e7aeb0aa-f9ee-4766-a104-161cd7a91169
@@ -97,3 +99,58 @@
      (boundingbox .
                   ["45.5238709" "45.524017" "-122.6759711" "-122.6757681"]))
     #+end_example
+
+
+*** Printable Addresses
+    :PROPERTIES:
+    :ID:       c6b1c5f4-9ce9-428f-a83c-036d84a63b7c
+    :END:
+
+    The geocoding functions return structured data; if you want
+    something easy to read, you can use =nominatim-printable-oneline=
+    or =nominatim-printable-nlines=.  The former returns a single-line
+    representation, while the latter is multi-line in the format you’d
+    use when addressing an envelope.
+
+    #+BEGIN_SRC emacs-lisp :exports both :cache yes
+      (nominatim-printable-oneline (aref (nominatim-geocode "ground kontrol portland") 0))
+    #+END_SRC
+
+    #+RESULTS[aa08069f5b843a8d8e404812550a5fae5031f36d]:
+    : Ground Kontrol Arcade, 511 Northwest Couch Street, Portland, Oregon 97209, USA
+
+    #+BEGIN_SRC emacs-lisp :exports both :cache yes
+      (nominatim-printable-nlines (aref (nominatim-geocode "wunderland milwaukie, or") 0))
+    #+END_SRC
+
+    #+RESULTS[5650f3c88be20748a4011ed5dfae90263f7a17ea]:
+    : Wunderland
+    : 11011 Southeast Main Street
+    : Milwaukie, Oregon 97222
+    : USA
+
+
+** Limitations
+   :PROPERTIES:
+   :ID:       8d6cd453-1224-4317-b9c5-f7fe8d788b3c
+   :END:
+
+   The printable address support works for US addresses only.  I know
+   enough to know that other countries have different formats, and
+   also know that I don’t know what they actually are.  New countries
+   can be added by defining =nominatim--printable-{COUNTRY-CODE}= and
+   adding a case to =nominatim--printable=.  Contributions welcomed.
+
+   The OSM data returned from Nominatim is kind of crappy, which can
+   have a negative impact on what you get back.  For example, the name
+   of a place is contained in a key containing the value of its type,
+   ex:
+
+   #+BEGIN_SRC js
+     {"pub": "The Local Watering Hole"}
+   #+END_SRC
+
+   Meaning that the correct key to use to get the name varies by the
+   type of the thing returned.  The name of the key is the value of
+   /another/ key, =type=, but this isn’t returned from the reverse
+   geocoding API.  So those addresses just don’t print right.
