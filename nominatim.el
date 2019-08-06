@@ -4,7 +4,7 @@
 
 ;; Author: Ian Eure <public@lowbar.fyi>
 ;; URL: https://github.com/ieure/nominatim
-;; Version: 0.9.1
+;; Version: 0.9.2
 ;; Package-Requires: ((emacs "25"))
 ;; Keywords: tools
 
