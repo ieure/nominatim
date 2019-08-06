@@ -120,7 +120,7 @@
 
 (defmacro nominatim--field (elements addr field &optional break)
   "Push ADDR field FIELD onto ELEMENTS, followed by BREAK.
-   If FIELD isn't set, do nothing. and return NIL.
+If FIELD isn't set, do nothing and return NIL.
    If FIELD's value was pushed, returns non-NIL."
   `(prog1 (if-let ((val (cdr (assoc ,field ,addr))))
              (push val ,elements))
@@ -129,7 +129,7 @@
 
 (defun nominatim--printable (loc)
   "Return an abstract printable version of location LOC.
-   A human-readable string can be obtained by passing this to
+A human-readable string can be obtained by passing this to
    `nominatim--printable->oneline' or
    `nominatim--printable->nline'.
 
@@ -202,7 +202,7 @@
   (nominatim--req "reverse" `((lat ,lat) (lon ,lon))))
 
 (defun nominatim-reverse-geocode-geoclue (geoclue-location)
-  "Reverse geocode a Geoclue2 location."
+  "Reverse geocode `GEOCLUE-LOCATION', a Geoclue2-format list."
   (nominatim-reverse-geocode (cdr (assoc 'latitude  geoclue-location))
                              (cdr (assoc 'longitude  geoclue-location))))
 
