@@ -118,7 +118,7 @@
       (search-forward "\n\n")
       (json-read))))
 
-(defmacro nominatum--field (elements addr field &optional break)
+(defmacro nominatim--field (elements addr field &optional break)
   "Push ADDR field FIELD onto ELEMENTS, followed by BREAK.
    If FIELD isn't set, do nothing. and return NIL.
    If FIELD's value was pushed, returns non-NIL."
@@ -127,11 +127,11 @@
     (when ,break
       (push ,break ,elements))))
 
-(defun nominatum--printable (loc)
+(defun nominatim--printable (loc)
   "Return an abstract printable version of location LOC.
    A human-readable string can be obtained by passing this to
-   `nominatum--printable->oneline' or
-   `nominatum--printable->nline'.
+   `nominatim--printable->oneline' or
+   `nominatim--printable->nline'.
 
    The abstract representation is a list of text items, with
    :break (for a hard break, e.g. newline) and
@@ -140,41 +140,41 @@
               (cdr)
               (assoc 'country_code)
               (cdr))))
-    (cond ((string= cc "us") (nominatum--printable-us loc))
+    (cond ((string= cc "us") (nominatim--printable-us loc))
           (t (error "Don't know how to handle `%s' addresses" cc)))))
 
-(defun nominatum--printable-us (loc)
+(defun nominatim--printable-us (loc)
   "Return a human-readable version of nominatim US location LOC."
   (let* ((elements)
          (addr (cdr (assoc 'address loc)))
          (type-sym (intern (cdr (assoc 'type loc)))))
       ;; Business name
-      (nominatum--field elements addr type-sym :break)
+      (nominatim--field elements addr type-sym :break)
 
       ;; House number
-      (nominatum--field elements addr 'house_number)
+      (nominatim--field elements addr 'house_number)
 
       ;; Road
-      (nominatum--field elements addr 'road :break)
+      (nominatim--field elements addr 'road :break)
 
       ;; FIXME suite, apartment, floor, etc
 
       ;; If the city is set, use it; otherwise, the county.
-      (or (nominatum--field elements addr 'city :soft-break)
-          (nominatum--field elements addr 'county :soft-break))
+      (or (nominatim--field elements addr 'city :soft-break)
+          (nominatim--field elements addr 'county :soft-break))
 
       ;; State
-      (nominatum--field elements addr 'state)
+      (nominatim--field elements addr 'state)
 
       ;; Postcode
-      (nominatum--field elements addr 'postcode :break)
+      (nominatim--field elements addr 'postcode :break)
 
       ;; Country
-      (nominatum--field elements addr 'country)
+      (nominatim--field elements addr 'country)
 
       (seq-reverse elements)))
 
-(defun nominatum--printable->oneline (printable-loc)
+(defun nominatim--printable->oneline (printable-loc)
   "Return a one-line human-readable version PRINTABLE-LOC."
   (thread-first
       (lambda (s elt)
@@ -183,7 +183,7 @@
               (t (concat s " " elt))))
     (reduce printable-loc)))
 
-(defun nominatum--printable->nline (printable-loc)
+(defun nominatim--printable->nline (printable-loc)
   "Return a multi-line human-readable version PRINTABLE-LOC."
   (thread-first
       (lambda (s elt)
@@ -245,15 +245,15 @@
 (ert-deftest nominatim-printable-test ()
   (should (equal '("Xfinity" :break "7037" "Northeast Sandy Boulevard" :break
                    "Portland" :soft-break "Oregon" "97213" :break "USA")
-                 (nominatum--printable nominatim--xfinity-test-loc))))
+                 (nominatim--printable nominatim--xfinity-test-loc))))
 
 (ert-deftest nominatim-oneline-test ()
   (should (string= "Xfinity, 7037 Northeast Sandy Boulevard, Portland, Oregon 97213, USA"
-                   (nominatum--printable->oneline (nominatum--printable nominatim--xfinity-test-loc)))))
+                   (nominatim--printable->oneline (nominatim--printable nominatim--xfinity-test-loc)))))
 
 (ert-deftest nominatim-nline-test ()
   (should (string= "Xfinity\n7037 Northeast Sandy Boulevard\nPortland, Oregon 97213\nUSA"
-                   (nominatum--printable->nline (nominatum--printable nominatim--xfinity-test-loc)))))
+                   (nominatim--printable->nline (nominatim--printable nominatim--xfinity-test-loc)))))
 
 (provide 'nominatim)
 
