@@ -35,11 +35,11 @@
 ;;
 ;; ,----
 ;; | [((place_id . 247862422)
-;; |   (licence . "Data Â© OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright")
+;; |   (licence . "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright")
 ;; |   (osm_type . "way")
 ;; |   (osm_id . 519770048)
 ;; |   (boundingbox .
-;;                  |                ["45.5173392" "45.5174831" "-122.6591702" "-122.6589738"])
+;; |                ["45.5173392" "45.5174831" "-122.6591702" "-122.6589738"])
 ;; |   (lat . "45.51741115")
 ;; |   (lon . "-122.659071975122")
 ;; |   (display_name . "Creepy's, 627, Southeast Morrison Street, Central East Side, Buckman, Portland, Multnomah County, Oregon, 97214, USA")
@@ -73,26 +73,26 @@
 ;;
 ;; ,----
 ;; | ((place_id . 123976214)
-;;    |  (licence . "Data Â© OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright")
-;;    |  (osm_type . "way")
-;;    |  (osm_id . 207186676)
-;;    |  (lat . "45.52394445")
-;;    |  (lon . "-122.675869609626")
-;;    |  (display_name . "Ground Kontrol Arcade, 511, Northwest Couch Street, Chinatown, Old Town, Portland, Multnomah County, Oregon, 97209, USA")
-;;    |  (address
-;;        |   (pub . "Ground Kontrol Arcade")
-;;        |   (house_number . "511")
-;;        |   (road . "Northwest Couch Street")
-;;        |   (neighbourhood . "Chinatown")
-;;        |   (suburb . "Old Town")
-;;        |   (city . "Portland")
-;;        |   (county . "Multnomah County")
-;;        |   (state . "Oregon")
-;;        |   (postcode . "97209")
-;;        |   (country . "USA")
-;;        |   (country_code . "us"))
-;;    |  (boundingbox .
-;;                    |               ["45.5238709" "45.524017" "-122.6759711" "-122.6757681"]))
+;; |  (licence . "Data Â© OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright")
+;; |  (osm_type . "way")
+;; |  (osm_id . 207186676)
+;; |  (lat . "45.52394445")
+;; |  (lon . "-122.675869609626")
+;; |  (display_name . "Ground Kontrol Arcade, 511, Northwest Couch Street, Chinatown, Old Town, Portland, Multnomah County, Oregon, 97209, USA")
+;; |  (address
+;; |   (pub . "Ground Kontrol Arcade")
+;; |   (house_number . "511")
+;; |   (road . "Northwest Couch Street")
+;; |   (neighbourhood . "Chinatown")
+;; |   (suburb . "Old Town")
+;; |   (city . "Portland")
+;; |   (county . "Multnomah County")
+;; |   (state . "Oregon")
+;; |   (postcode . "97209")
+;; |   (country . "USA")
+;; |   (country_code . "us"))
+;; |  (boundingbox .
+;; |               ["45.5238709" "45.524017" "-122.6759711" "-122.6757681"]))
 ;; `----
 
 ;;; Code:
