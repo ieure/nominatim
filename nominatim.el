@@ -154,6 +154,7 @@
 ;;; Code:
 
 (require 'ert)
+(require 'cl)
 
 (defconst nominatim--base-url "https://nominatim.openstreetmap.org"
   "Base URL of Nominatim.")
@@ -197,7 +198,7 @@ A human-readable string can be obtained by passing this to
               (cdr)
               (assoc 'country_code)
               (cdr))))
-    (cond ((string= cc "us") (nominatim--printable-us))
+    (cond ((string= cc "us") (nominatim--printable-us loc))
           (t (error "Don't know how to handle `%s' addresses" cc)))))
 
 (defun nominatim--printable-us (loc)
@@ -241,7 +242,7 @@ A human-readable string can be obtained by passing this to
         ;; Replace all break types with commas
         (cond ((keywordp elt) (concat s ","))
               (t (concat s " " elt))))
-    (reduce printable-loc)))
+    (cl-reduce printable-loc)))
 
 (defun nominatim--printable->nlines (printable-loc)
   "Return a multi-line human-readable version PRINTABLE-LOC."
@@ -253,7 +254,7 @@ A human-readable string can be obtained by passing this to
               ;; If the last char was a newline, don't add whitespace.
               ((string= "\n" (substring s (1- (length s)))) (concat s elt))
               (t (concat s " " elt))))
-    (reduce printable-loc)))
+    (cl-reduce printable-loc)))
 
 
 ;;;###autoload
